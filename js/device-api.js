@@ -7,6 +7,16 @@
     $.getJSON(apiurl + "devices.js?callback=?", callback); 
   }
 
+  dapi.addDevice = function(name, lat, lng) {
+    $.post(apiurl + "devices/", {
+      device: {
+        name: name,
+        latitude: lat,
+        longitude: lng
+      }
+    });
+  }
+
   dapi.deleteDevice = function(id) {
     console.log("Deleting " + id);
   }

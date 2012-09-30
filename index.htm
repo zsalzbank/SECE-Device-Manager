@@ -5,50 +5,46 @@
     <link rel ="stylesheet" type = "text/css" href= "./css/bootstrap.css">
     <link rel ="stylesheet" type = "text/css" href= "./css/styles.css">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true">
-    </script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true"></script>
   </head>
   <body>
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a class= "brand" href= "#">Device Manager</a>
+          <a class= "brand" href= "index.htm">Device Manager</a>
           <ul class="nav">
             <li class="active">
-              <a href="#">Home</a>
+              <a href="index.htm">Home</a>
             </li>
-            <li><a href="newSObj.php">Add Device</a></li>
-            <li><a href="indoorcheck.php">Indoor Maps</a></li>
+            <li><a href="#" id="add-device">Add Device</a></li>
           </ul>
-          <ul class = "nav pull-right"><a href = "logout.php"><li> Logout </a></li></ul>
         </div>
       </div>
     </div>
-    <div class = "container">
-      <div class = "span4" id = "sidebar">
-        <ul class="nav nav-pills nav-stacked"></ul>
+    <div>
+      <div id="sidebar" class="hide">
+        <p class="step">
+          Click a location on the map to add a device.  Click continue to open street view and pinpoint the location.
+        </p>
+        <p class="step">
+          Select the location of the device on the street view map.  When selected, press continue.
+        </p>
+        <p class="step">
+          Enter a name and press continue to add the device.
+          <input type="text" id="add-name" placeholder="Name">
+        </p>
+        <a href="#" id="add-continue" class="btn btn-primary">Continue</a>
+        <a href="#" id="add-cancel" class="btn btn-inverse">Cancel</a>
       </div>
-      <div class = "span12">
-        <div id="map_canvas" class = "map"></div>
-      </div>
+      <div id="map-canvas"></div>
     </div>
-    <script type = "text/javascript" src = "js/map.js"></script>
     <script type = "text/javascript" src = "js/device-api.js"></script>
+    <script type = "text/javascript" src = "js/map.js"></script>
     <script type="text/javascript">
       (function() {
-        var $dl = $('#sidebar ul');
-
-        DeviceAPI.getDevices(function(data) {
-          $.each(data, function(i, device) {
-            var md = DeviceMap.addDevice(device);
-
-            var $item = $('<li><a> href="#"</a></li>').children(0);
-            $item.html(device.name);
-            $item.click(md.show);
-            $dl.append($item.parent());
-          });
-        });
+        DeviceMap.loadDevices();
+        $("#add-device").click(DeviceMap.toggleAddDevice);
+        $("#add-cancel").click(DeviceMap.toggleAddDevice);
       })();
     </script>
   </body>

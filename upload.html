@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel ="stylesheet" type = "text/css" href= "./css/bootstrap.css">
+    <link rel ="stylesheet" type = "text/css" href= "./css/styles.css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true">
+    </script>
+    <script type = "text/javascript" src = "./js/putMarkers.js"></script>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class= "brand" href= "#"> SECE </a>
+          <ul class="nav">
+            <li class="active">
+              <a href="#">Home</a>
+            </li>
+            <li><a href="newSObj.php">Add SmartObject</a></li>
+            <li><a href="indoorcheck.php">Indoor Maps</a></li>
+          </ul>
+          <ul class = "nav pull-right"><a href = "logout.php"><li> Logout </a></li></ul>
+        </div>
+      </div>
+    </div>
+    <div class = "container">
+      <div class = "span4" id = "sidebar">
+      </div>
+      <div class = "span8" id = "upload">
+        <form id="upload" class = "form-horizontal" action="uploadtoserver.php" method="POST" enctype="multipart/form-data">  
+          <legend>HTML File Upload</legend>  
+          <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="300000" />  
+          <label for="fileselect" class = "">Files to upload:</label>  
+          <div class = "form-actions">  
+            <input type="file" id="fileselect" name="fileselect" class = "btn-file fileupload thumbnail btn" value = "choose file to upload"/>       
+            <br><br>
+            <input type="submit" class = "btn" value = "Upload Files" />
+          </div>   
+        </form>  
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 (function(exports) {
   var dm = exports;
-  var $canvas, $add, $addnext;
-  var gcdr, columbia, map, pano, markers = [];
+  var $canvas, $add, $addnext, $error;
+  var gcdr, columbia, map, pano, sv, markers = [];
   var openWindow = null, addShowing = false, addMarker = null, mapEvent = null;
 
   function resize() {
@@ -13,13 +13,16 @@
     $canvas = $("#map-canvas");
     $add = $("#sidebar");
     $addnext = $("#add-continue");
+    $error = $add.find(".error");
 
     gcdr = new google.maps.Geocoder();  
+    sv = new google.maps.StreetViewService();
     columbia = new google.maps.LatLng(40.809038567298586, -73.96126449108124);
 
     map = new google.maps.Map($canvas.get(0), {
       zoom: 11,
       center: columbia,
+      streetViewControl: false,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
@@ -93,6 +96,7 @@
       google.maps.event.removeListener(mapEvent);
       pano.setVisible(false);
       $add.hide();
+      $error.hide();
       setMarkerMap(map);
       removeAddMarker();
     } else {
@@ -113,14 +117,21 @@
     }
 
     function addStep2() {
-      showAddStep(1);
-      $addnext.unbind().click(addStep3);
-      google.maps.event.removeListener(mapEvent);
+      sv.getPanoramaByLocation(addMarker.getPosition(), 50, function(data, status) {
+        if(status == google.maps.StreetViewStatus.OK) {
+          showAddStep(1);
+          $addnext.unbind().click(addStep3);
+          $error.hide();
+          google.maps.event.removeListener(mapEvent);
 
-      addMarker.setDraggable(true);
+          addMarker.setDraggable(true);
 
-      pano.setPosition(addMarker.getPosition());
-      pano.setVisible(true);
+          pano.setPosition(addMarker.getPosition());
+          pano.setVisible(true);
+        } else {
+          $error.html("The selected location is not valid").fadeIn();
+        }
+      });
     }
 
     function addStep3() {

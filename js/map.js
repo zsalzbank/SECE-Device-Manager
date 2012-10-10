@@ -40,9 +40,29 @@
   }
 
   dm.addDevice = function(device) {
+    var $wc = $("<div></div>");
+    var $del = $('<a id="del' + device.id + '" href="#" class="btn btn-danger">Delete</a>');
+    $("#del" + device.id).die("click").live("click", function() {
+      DeviceAPI.deleteDevice(device.id, function(data, status) {
+        if(status == "success") {
+          dm.loadDevices();
+        } else {
+          alert("Error deleting!");
+        }
+      });
+    });
+    var $near = $('<a id="near' + device.id + '" href="#" class="btn btn-primary">Within 5 km</a>');
+    $("#near" + device.id).die("click").live("click", function() {
+	dm.loadNear(device.id, 5000);
+    });
+
+    $wc.append("<h5>" + device.name + "</h5>");
+    $wc.append($near);
+    $wc.append($del);
+
     var pos = new google.maps.LatLng(device.latitude, device.longitude);
     var info = new google.maps.InfoWindow({
-      content: device.name
+      content: $wc.html()
     });
     var marker = new google.maps.Marker({
       position: pos,
@@ -73,6 +93,17 @@
     markers = [];
 
     DeviceAPI.getDevices(function(data) {
+      $.each(data, function(i, device) {
+        var md = dm.addDevice(device.device);
+      });
+    });
+  }
+
+  dm.loadNear = function(id, distance) {
+    setMarkerMap(null);
+    markers = [];
+
+    DeviceAPI.getNear(id, distance, function(data) {
       $.each(data, function(i, device) {
         var md = dm.addDevice(device.device);
       });

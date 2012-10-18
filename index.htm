@@ -41,11 +41,15 @@
       </div>
       <div id="map-canvas"></div>
     </div>
-    <script type = "text/javascript" src = "js/device-api.js"></script>
     <script type = "text/javascript" src = "js/map.js"></script>
+    <script type = "text/javascript" src = "js/device-api.js"></script>
+    <script type = "text/javascript" src = "js/device-map.js"></script>
     <script type="text/javascript">
       (function() {
+        Map.initializeMap("#map-canvas");
+        DeviceMap.initialize();
         DeviceMap.loadDevices();
+
         $("#add-device").click(DeviceMap.toggleAddDevice);
         $("#add-cancel").click(DeviceMap.toggleAddDevice);
       })();

@@ -1,6 +1,6 @@
 (function(exports) {
   var dapi = exports;
-  var host = "irtlaptop8.cs.columbia.edu", port = 3000;
+  var host = "localhost", port = 3000;
   var apiurl = "http://" + host + ":" + port + "/";
 
   dapi.getDevices = function(callback) {

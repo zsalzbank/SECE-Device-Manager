@@ -19,3 +19,14 @@
 .error {
   color: red;
 }
+
+.half {
+  float: left;
+  width: 50%;
+}
+
+.scroller {
+  max-height: 800px;
+  width: 100%;
+  overflow: auto;
+}

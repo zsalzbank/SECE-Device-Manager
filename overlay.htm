@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel ="stylesheet" type = "text/css" href= "css/bootstrap.css">
+    <link rel ="stylesheet" type = "text/css" href= "css/styles.css">
+    <script type="text/javascript" src="js/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true"></script>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class= "brand" href= "index.htm">Device Manager - Add Overlay</a>
+          <ul class="nav">
+            <li><a href="index.htm">Home</a><li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div id="map-canvas" class="half"></div>
+      <div class="half">
+        <div class="instructions">
+          <div class="step hide">
+            Select two reference points by clicking on the map.
+          </div>
+          <div class="step hide">
+            Select an image for the overlay:
+            <input type="file" id="img-loader" name="img-loader"/>
+          </div>
+          <div class="step hide">
+            Select two reference points on the image that correspond to those on the map.
+          </div>
+        </div>
+        <div class="scroller">
+          <canvas id="img-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+    <script type = "text/javascript" src = "js/RotatedOverlay.js"></script>
+    <script type = "text/javascript" src = "js/map.js"></script>
+    <script type = "text/javascript" src = "js/overlay-create.js"></script>
+    <script type="text/javascript">
+      (function() {
+        Map.initializeMap("#map-canvas");
+
+        var columbia = new google.maps.LatLng(40.809038567298586, -73.96126449108124);
+        Map.objs.map.setCenter(columbia);
+
+        OverlayCreate.initialize();
+      })();
+    </script>
+  </body>
+</html>

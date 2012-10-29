@@ -32,6 +32,13 @@
           <div class="step hide">
             Select two reference points on the image that correspond to those on the map.
           </div>
+          <div class="step hide">
+            Fill in the following optional fields and press Save:
+            <input type="text" id="add-name" placeholder="Name"><br>
+            <input type="text" id="add-description" placeholder="Description"><br>
+            <input type="text" id="add-altitude" placeholder="Altitude"><br>
+            <a href="#" id="add-save" class="btn btn-primary">Save</a>
+          </div>
         </div>
         <div class="scroller">
           <canvas id="img-canvas"></canvas>
@@ -40,6 +47,7 @@
     </div>
     <script type = "text/javascript" src = "js/RotatedOverlay.js"></script>
     <script type = "text/javascript" src = "js/map.js"></script>
+    <script type = "text/javascript" src = "js/device-api.js"></script>
     <script type = "text/javascript" src = "js/overlay-create.js"></script>
     <script type="text/javascript">
       (function() {

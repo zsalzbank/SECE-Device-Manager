@@ -1,7 +1,7 @@
 (function(exports) {
   var oc = exports;
   var $instructions, $canvas, canvas, ctx;
-  var mapEvent, markerA = null, markerB = null, refA = null, refB = null, img = null;
+  var mapEvent, markerA = null, markerB = null, refA = null, refB = null, img = null, overlay = null, file = null;
   
   function showStep(i) {
     $instructions.find(".step").hide();
@@ -63,6 +63,7 @@
       startReferenceSelection();
     };
     reader.readAsDataURL(e.target.files[0]);     
+    file = e.target.files[0];
   }
 
   function drawPoint(text, that, e) {
@@ -97,14 +98,25 @@
     $canvas.unbind().click(function(e) {
       refB = drawPoint('B', this, e);
 
-      $canvas.unbind();
-
-      var x = new RotatedOverlay(
-        markerA.getPosition(), markerB.getPosition(),
-        refA, refB,
-        img.src,
-        Map.objs.map
-      );
+      startEnterInfo();
     });
+  }
+
+  function startEnterInfo() {
+    showStep(3);
+    $canvas.unbind().hide();
+
+    overlay = new RotatedOverlay(
+      markerA.getPosition(), markerB.getPosition(),
+      refA, refB,
+      img.src,
+      Map.objs.map
+    );
+
+    $("#add-save").click(save);
+  }
+
+  function save() {
+    DeviceAPI.addOverlay(markerA, markerB, refA, refB, file, "", "", 0);
   }
 })(OverlayCreate = {});

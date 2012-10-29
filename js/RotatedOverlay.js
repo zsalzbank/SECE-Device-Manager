@@ -13,6 +13,7 @@ function RotatedOverlay(locA, locB, refA, refB, image, map) {
     that.origHeight_ = this.height;
     that.canvasSize_ = Math.max(this.width, this.height) * 3;
   });
+  this.image_.crossOrigin = '';
   this.image_.src = image;
 
   this.refAngle_ = Math.atan((refB.y - refA.y)/(refB.x - refA.x)) * 180/Math.PI;
@@ -56,9 +57,6 @@ RotatedOverlay.prototype.draw = function() {
 
   var distance = Math.sqrt(Math.pow(posB.x - posA.x, 2) + Math.pow(posB.y - posA.y, 2));
   var scale = distance/this.refDistance_ ;
-  console.log("Scale:", scale);
-  console.log("Angle:", rotAngle);
-  console.log("RA:", this.refA_);
 
   canvas.width = this.canvasSize_;
   canvas.height = this.canvasSize_; 
@@ -72,27 +70,18 @@ RotatedOverlay.prototype.draw = function() {
 
   var ra = -rotAngle * Math.PI/180;
   var np = { x: (this.canvasSize_ - this.origWidth_)/2 + this.refA_.x, y: (this.canvasSize_ - this.origHeight_)/2 + this.refA_.y };
-  console.log("NP:", np);
   var cp = { x: np.x - this.canvasSize_/2, y: this.canvasSize_/2 - np.y }; 
-  console.log("CP:", cp);
   var rot = { x: cp.x*Math.cos(ra) - cp.y * Math.sin(ra), y: cp.x*Math.sin(ra) + cp.y*Math.cos(ra) };
-  console.log("Rot:", rot);
   var pt = { x: rot.x + this.canvasSize_/2, y: this.canvasSize_/2 - rot.y };
-
-  console.log("New Pt:", pt);
 
   var bounds = this.getBounds(ctx.getImageData(0, 0, canvas.width, canvas.height), canvas.width, canvas.height);
   data = ctx.getImageData(bounds.tl.x, bounds.tl.y, bounds.br.x - bounds.tl.x, bounds.br.y - bounds.tl.y);
 
   var fp = { x: pt.x-bounds.tl.x, y: pt.y-bounds.tl.y};
-  console.log("Bounds:", bounds);
-  console.log("FP:", fp);
-  console.log("PosA:", posA);
 
   canvas.width = bounds.br.x - bounds.tl.x;
   canvas.height = bounds.br.y - bounds.tl.y;
   ctx.putImageData(data, 0, 0);
-  console.log("Final Size: ", canvas.width, canvas.height);
 
   this.div_img_.attr('src', canvas.toDataURL());
   this.div_img_.css('width', scale * canvas.width + 'px');

@@ -13,7 +13,6 @@ function RotatedOverlay(locA, locB, refA, refB, image, map) {
     that.origHeight_ = this.height;
     that.canvasSize_ = Math.max(this.width, this.height) * 3;
   });
-  this.image_.crossOrigin = '';
   this.image_.src = image;
 
   this.refAngle_ = Math.atan((refB.y - refA.y)/(refB.x - refA.x)) * 180/Math.PI;

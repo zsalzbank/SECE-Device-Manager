@@ -58,12 +58,14 @@
         canvas.height = img.height;
         ctx.drawImage(img,0,0);
       }
-      img.src = event.target.result;
 
       startReferenceSelection();
     };
     reader.readAsDataURL(e.target.files[0]);     
     file = e.target.files[0];
+    DeviceAPI.getSafeImage(file, function(data) {
+        img.src = data;
+    });
   }
 
   function drawPoint(text, that, e) {

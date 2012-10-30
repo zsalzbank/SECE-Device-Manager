@@ -1,6 +1,6 @@
 (function(exports) {
   var dapi = exports;
-  var host = "localhost", port = 3000;
+  var host = location.hostname, port = 3000;
   var apiurl = "http://" + host + ":" + port + "/";
 
   dapi.getURL = function() {

@@ -29,7 +29,7 @@
     });
   }
 
-  dapi.addOverlay = function(mA, mB, rA, rB, file, name, description, altitude) {
+  dapi.addOverlay = function(mA, mB, rA, rB, file, name, description, altitude, callback) {
     var pA = mA.getPosition(), pB = mB.getPosition();
 
     var data = new FormData();
@@ -50,7 +50,8 @@
       cache: false,
       contentType: false,
       processData: false,
-      type: 'POST'
+      type: 'POST',
+      complete: callback
     });
   }
 

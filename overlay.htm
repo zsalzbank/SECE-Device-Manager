@@ -11,9 +11,10 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a class= "brand" href= "index.htm">Device Manager - Add Overlay</a>
+          <a class= "brand" href= "index.htm">Device Manager</a>
           <ul class="nav">
             <li><a href="index.htm">Home</a><li>
+            <li class="active"><a href="overlay.htm">Add Overlay</a></li>
           </ul>
         </div>
       </div>
@@ -33,11 +34,18 @@
             Select two reference points on the image that correspond to those on the map.
           </div>
           <div class="step hide">
-            Fill in the following optional fields and press Save:
+            Fill in the following optional fields and press Save:<br>
             <input type="text" id="add-name" placeholder="Name"><br>
             <input type="text" id="add-description" placeholder="Description"><br>
             <input type="text" id="add-altitude" placeholder="Altitude"><br>
             <a href="#" id="add-save" class="btn btn-primary">Save</a>
+            <div class="error hide">
+                There was an error saving.
+            </div>
+          </div>
+          <div class="step hide">
+            The overlay was saved.<br>
+            <a href="index.htm" class="btn btn-primary">View Map</a>
           </div>
         </div>
         <div class="scroller">

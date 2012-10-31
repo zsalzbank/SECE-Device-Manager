@@ -30,3 +30,7 @@
   width: 100%;
   overflow: auto;
 }
+
+.instructions {
+    padding: 5px;
+}

@@ -117,6 +117,20 @@
   }
 
   function save() {
-    DeviceAPI.addOverlay(markerA, markerB, refA, refB, file, "", "", 0);
+    $("#add-save").hide();
+
+    DeviceAPI.addOverlay(markerA, markerB, refA, refB, file, $("#add-name").val(), $("#add-description").val(), $("#add-altitude").val(), saveDone);
+  }
+
+  function saveDone(xhr, status) {
+    if(status == "success") {
+        var data = JSON.parse(xhr.responseText);
+        if(data.success) {
+            showStep(4);
+            return;
+        }
+    }
+
+    $(".error").show();
   }
 })(OverlayCreate = {});

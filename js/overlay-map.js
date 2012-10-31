@@ -8,7 +8,7 @@
     new RotatedOverlay(
       pA, pB,
       {x: overlay.imgRefAX, y: overlay.imgRefAY}, {x: overlay.imgRefBX, y: overlay.imgRefBY},
-      DeviceAPI.getURL() + "overlays/" + overlay.id + "/img",
+      DeviceAPI.getURL() + overlay.img,
       Map.objs.map
     );
   }

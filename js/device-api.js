@@ -29,21 +29,6 @@
     });
   }
 
-  dapi.getSafeImage = function(file, callback) {
-    var data = new FormData();
-    data.append('image', file);
-
-    $.ajax({ 
-      url: apiurl + "safeimage/",
-      data: data,
-      cache: false,
-      contentType: false,
-      processData: false,
-      type: 'POST',
-      success: callback
-    });
-  }
-
   dapi.addOverlay = function(mA, mB, rA, rB, file, name, description, altitude) {
     var pA = mA.getPosition(), pB = mB.getPosition();
 

@@ -54,3 +54,7 @@ RotatedOverlay.prototype.draw = function() {
   this.div_.css('-webkit-transform-origin', scale*this.refA_.x + 'px ' + scale*this.refA_.y + 'px');
   this.div_.css('-webkit-transform', 'rotate(' + rotAngle + 'deg)');
 }
+
+RotatedOverlay.prototype.setOpacity = function(percent) {
+  this.div_.css('opacity', percent/100);
+}

@@ -19,6 +19,9 @@
             <li><a href="#" id="add-device">Add Device</a></li>
             <li><a href="overlay.htm">Add Overlay</a></li>
           </ul>
+          <div class="navbar-search pull-right" action="">
+            <input type="text" class="search-query span2" id="overlay-opacity" placeholder="Overlay Opacity" value="100">
+          </div>
         </div>
       </div>
     </div>
@@ -56,6 +59,11 @@
 
         $("#add-device").click(DeviceMap.toggleAddDevice);
         $("#add-cancel").click(DeviceMap.toggleAddDevice);
+
+        $("#overlay-opacity").keyup(function() {
+            console.log(this);
+            OverlayMap.setOpacity($(this).val());
+        });
       })();
     </script>
   </body>

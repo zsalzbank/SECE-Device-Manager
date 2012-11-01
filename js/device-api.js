@@ -29,6 +29,10 @@
     });
   }
 
+  dapi.addArea = function(area, callback) {
+    $.post(apiurl + "areas/", area, callback); 
+  }
+
   dapi.addOverlay = function(mA, mB, rA, rB, file, name, description, altitude, callback) {
     var pA = mA.getPosition(), pB = mB.getPosition();
 

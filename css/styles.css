@@ -34,3 +34,8 @@
 .instructions {
     padding: 5px;
 }
+
+.editor-form {
+    height: 220px;
+    margin-top: 10px;;
+}

@@ -2,6 +2,7 @@
   var ac = exports;
   var $editor = null;
   var dm = null, overlayType = null, overlay = null, infoWindow = null, infoWindowContent = null;
+  var currentParent = null;
 
   ac.initialize = function() {
     $editor = $("#area-editor");
@@ -32,9 +33,9 @@
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  function getCenter(o) {
+  function getBounds(o) {
     if(typeof o.getBounds !== "undefined")
-      return o.getBounds().getCenter();
+      return o.getBounds();
 
     var bounds = new google.maps.LatLngBounds();
     var points = o.getPath();
@@ -43,21 +44,90 @@
       bounds.extend(p);
     });
 
-    return bounds.getCenter();
+    return bounds;
+  }
+
+  function makeid(len) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < len; i++ )
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return "c" + text;
+  }
+
+  function fillParentSelect(data, parentClass) {
+    var $sel = $("." + parentClass);
+    var html = '<option value="-1">(None)</option>';
+
+    if(data.length == 0) {
+      $sel.html(html).hide();
+      return;
+    }
+
+    AreaMap.drawAreas(data);
+
+    $(data).each(function(i, el) {
+      var area = el.area;
+      html += '<option value="' + area.id + '">' + area.name + '</option>';
+    });
+    $sel.html(html);
+  }
+
+  function selectParent(e) {
+    var id = $(e.target).val();
+    if(currentParent != null) {
+      currentParent.setOptions({
+        clickable: false,
+        fillColor: '#DDD',
+        strokeColor: '#BBB'
+      });
+    }
+
+    if(id != -1) {
+      currentParent = AreaMap.currentAreas()[id];
+      currentParent.setOptions({
+        clickable: false,
+        fillColor: '#00DD00',
+        strokeColor: '#BBB'
+      });
+    } else {
+      currentParent = null;
+    }
   }
 
   function doneDrawing(event) {
     overlay = event.overlay;
     overlayType = event.type;
 
+    overlay.setOptions({ zIndex: 10000 });
+
+    var bounds = getBounds(overlay);
+
     dm.setOptions({
       drawingControl: false,
       drawingMode: null 
     });
 
+    var content = $editor.clone();
+    var parentClass = makeid(10);
+    content.find("#add-parent").addClass(parentClass);
+    $("." + parentClass).live('change', selectParent);
+
+    DeviceAPI.getNearArea({
+      n: bounds.getNorthEast().lat(),
+      e: bounds.getNorthEast().lng(),
+      s: bounds.getSouthWest().lat(),
+      w: bounds.getSouthWest().lng()
+    },
+    function(data) {
+        fillParentSelect(data, parentClass);
+    });
+
     infoWindow = new google.maps.InfoWindow({
-      content: $editor.clone().html(),
-      position: getCenter(overlay) 
+      content: content.html(),
+      position: bounds.getCenter()
     });
 
     google.maps.event.addListener(infoWindow, 'closeclick', cancelOverlay);
@@ -70,6 +140,9 @@
 
     overlay.setMap(null);
     dm.setOptions({ drawingControl: true });
+
+    AreaMap.clearAreas();
+    currentParent = null;
 
     overlay = null;
     overlayType = null;
@@ -85,12 +158,11 @@
     b.show();
 
     var name = form.find("#add-name").val()
-    var url_name = form.find("#add-url-name").val()
     var altitude = form.find("#add-altitude").val()
     var parent_area = form.find("#add-parent").val()
 
-    if (name == "" || url_name == "") {
-      $error.text("Please enter a valid name and URL name.").show();
+    if (name == "") {
+      $error.text("Please enter a valid name.").show();
       return;
     } else if (!isNumeric(altitude)) {
       $error.text("Please enter a valid altitude.").show();
@@ -99,9 +171,8 @@
 
     var area = {
         name: name,
-        url_name: url_name,
         altitude: altitude,
-        parent_area: parent_area,
+        parent: parent_area,
         circle: (overlayType == "circle")
     }
 

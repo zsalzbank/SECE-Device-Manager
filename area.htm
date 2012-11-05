@@ -16,7 +16,6 @@
             <li>
               <a href="index.htm">Home</a>
             </li>
-            <li><a href="#" id="add-device">Add Device</a></li>
             <li><a href="overlay.htm">Add Overlay</a></li>
             <li class="active"><a href="area.htm">Add Area</a></li>
           </ul>
@@ -27,7 +26,6 @@
       <div class="editor-form">
         Please enter the following information:<br>
         <input type="text" id="add-name" placeholder="Name"><br>
-        <input type="text" id="add-url-name" placeholder="URL Name"><br>
         <input type="text" id="add-altitude" placeholder="Altitude"><br>
         <select id="add-parent" placeholder="Parent"></select><br>
         <div class="error hide"></div>
@@ -41,6 +39,7 @@
     <div id="map-canvas"></div>
     <script type = "text/javascript" src = "js/map.js"></script>
     <script type = "text/javascript" src = "js/device-api.js"></script>
+    <script type = "text/javascript" src = "js/area-map.js"></script>
     <script type = "text/javascript" src = "js/area-create.js"></script>
     <script type="text/javascript">
       (function() {

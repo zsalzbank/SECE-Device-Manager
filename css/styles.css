@@ -39,3 +39,7 @@
     height: 220px;
     margin-top: 10px;;
 }
+
+.navbar .checkbox {
+  display: inline-block;
+}

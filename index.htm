@@ -18,8 +18,11 @@
             </li>
             <li><a href="#" id="add-device">Add Device</a></li>
             <li><a href="overlay.htm">Add Overlay</a></li>
+            <li><a href="area.htm">Add Area</a></li>
           </ul>
           <div class="navbar-search pull-right" action="">
+              <label class="checkbox">Overlays<input type="checkbox" checked></label>
+              <label class="checkbox">Areas<input type="checkbox" id="show-areas" checked></label>
             <input type="text" class="search-query span2" id="overlay-opacity" placeholder="Overlay Opacity" value="100">
           </div>
         </div>
@@ -50,6 +53,7 @@
     <script type = "text/javascript" src = "js/device-api.js"></script>
     <script type = "text/javascript" src = "js/device-map.js"></script>
     <script type = "text/javascript" src = "js/overlay-map.js"></script>
+    <script type = "text/javascript" src = "js/area-map.js"></script>
     <script type="text/javascript">
       (function() {
         Map.initializeMap("#map-canvas");
@@ -63,6 +67,16 @@
         $("#overlay-opacity").keyup(function() {
             console.log(this);
             OverlayMap.setOpacity($(this).val());
+        });
+
+        DeviceAPI.getAreas(AreaMap.drawAreas);
+
+        $("#show-areas").change(function() {
+          if($(this).is(':checked')) {
+            AreaMap.setMap(Map.objs.map);
+          } else {
+            AreaMap.setMap(null);
+          }
         });
       })();
     </script>

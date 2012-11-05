@@ -15,6 +15,14 @@
     $.getJSON(apiurl + "devices/" + id + "/near/?callback=?&distance=" + distance, callback, distance); 
   }
 
+  dapi.getNearArea = function(data, callback) {
+    $.getJSON(apiurl + "areas/near/?callback=?", data, callback); 
+  }
+
+  dapi.getAreas = function(callback) {
+    $.getJSON(apiurl + "areas/?callback=?", callback); 
+  }
+
   dapi.getOverlays = function(callback) {
     $.getJSON(apiurl + "overlays.js?callback=?", callback); 
   }

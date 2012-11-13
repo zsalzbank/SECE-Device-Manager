@@ -1,7 +1,7 @@
 (function(exports) {
   var m = exports;
   var $canvas;
-  var gcdr, map, pano, sv;
+  var gcdr, map, pano, sv, dm = null;
 
   function resize() {
     $canvas.height($(document).height() - $canvas.offset().top);
@@ -32,6 +32,20 @@
       pano: pano,
       sv: sv
     };
+
+    map.setCenter(new google.maps.LatLng(40.809038567298586, -73.96126449108124));
+  }
+
+  m.setDrawingManager = function(drawingManager) {
+    if(dm != null) {
+      dm.setMap(null);
+    }
+
+    dm = drawingManager;
+
+    if(dm != null) {
+      dm.setMap(map);
+    }
   }
 
 })(Map = {});

@@ -5,6 +5,7 @@
     <link rel ="stylesheet" type = "text/css" href= "./css/bootstrap.css">
     <link rel ="stylesheet" type = "text/css" href= "./css/styles.css">
     <script type="text/javascript" src="js/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="js/bootstrap-tab.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true"></script>
   </head>
   <body>
@@ -16,7 +17,7 @@
             <li class="active">
               <a href="index.htm">Home</a>
             </li>
-            <li><a href="#" id="add-device">Add Device</a></li>
+            <li><a href="device.htm">Add Device</a></li>
             <li><a href="overlay.htm">Add Overlay</a></li>
             <li><a href="area.htm">Add Area</a></li>
           </ul>
@@ -29,22 +30,23 @@
       </div>
     </div>
     <div>
-      <div id="sidebar" class="hide">
-        <p class="step">
-          Click a location on the map to add a device.  Click continue to open street view and pinpoint the location.
-        </p>
-        <p class="step">
-          Select the location of the device on the street view map.  When selected, press continue.
-        </p>
-        <p class="step">
-          Enter a name and press continue to add the device.
-          <input type="text" id="add-name" placeholder="Name">
-        </p>
-        <p class="error">
-
-        </p>
-        <a href="#" id="add-continue" class="btn btn-primary">Continue</a>
-        <a href="#" id="add-cancel" class="btn btn-inverse">Cancel</a>
+      <div id="sidebar">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#devices" data-toggle="tab">Devices</a></li>
+            <li><a href="#overlays" data-toggle="tab">Overlays</a></li>
+            <li><a href="#areas" data-toggle="tab">Areas</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="devices" class="tab-pane active">
+            <input type="text" placeholder="Search">
+          </div>
+          <div id="overlays" class="tab-pane">
+              Overlays
+          </div>
+          <div id="areas" class="tab-pane">
+              Areas
+          </div>
+        </div>
       </div>
       <div id="map-canvas"></div>
     </div>
@@ -57,19 +59,14 @@
     <script type="text/javascript">
       (function() {
         Map.initializeMap("#map-canvas");
-        DeviceMap.initialize();
         DeviceMap.loadDevices();
         OverlayMap.loadOverlays();
-
-        $("#add-device").click(DeviceMap.toggleAddDevice);
-        $("#add-cancel").click(DeviceMap.toggleAddDevice);
+        DeviceAPI.getAreas(AreaMap.drawAreas);
 
         $("#overlay-opacity").keyup(function() {
             console.log(this);
             OverlayMap.setOpacity($(this).val());
         });
-
-        DeviceAPI.getAreas(AreaMap.drawAreas);
 
         $("#show-areas").change(function() {
           if($(this).is(':checked')) {

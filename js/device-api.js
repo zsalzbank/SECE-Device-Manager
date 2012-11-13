@@ -7,12 +7,8 @@
     return apiurl;
   }
 
-  dapi.getDevices = function(callback) {
-    $.getJSON(apiurl + "devices.js?callback=?", callback); 
-  }
-
-  dapi.getNear = function(id, distance, callback) {
-    $.getJSON(apiurl + "devices/" + id + "/near/?callback=?&distance=" + distance, callback, distance); 
+  dapi.getDevices = function(data, callback) {
+    $.getJSON(apiurl + "devices.js?callback=?", data, callback); 
   }
 
   dapi.getNearArea = function(data, callback) {
@@ -27,14 +23,8 @@
     $.getJSON(apiurl + "overlays.js?callback=?", callback); 
   }
 
-  dapi.addDevice = function(name, lat, lng) {
-    $.post(apiurl + "devices/", {
-      device: {
-        name: name,
-        latitude: lat,
-        longitude: lng
-      }
-    });
+  dapi.addDevice = function(device, callback) {
+    $.post(apiurl + "devices/", {device: device}, callback);
   }
 
   dapi.addArea = function(area, callback) {

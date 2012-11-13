@@ -25,8 +25,11 @@
     });
 
     google.maps.event.addListener(dm, 'overlaycomplete', doneDrawing);
+  }
 
-    dm.setMap(Map.objs.map);
+  ac.start = function() {
+    overlayType = overlay = infoWindow = infoWindowContent = currentParent = null;
+    Map.setDrawingManager(dm);
   }
 
   function isNumeric(n) {

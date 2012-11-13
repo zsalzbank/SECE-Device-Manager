@@ -1,6 +1,7 @@
 (function(exports) {
   var om = exports;
   var overlays = [];
+  var opacity = 50;
 
   om.addOverlay = function(overlay) {
     var pA = new google.maps.LatLng(overlay.geoRefA_latitude, overlay.geoRefA_longitude);
@@ -10,7 +11,8 @@
       pA, pB,
       {x: overlay.imgRefAX, y: overlay.imgRefAY}, {x: overlay.imgRefBX, y: overlay.imgRefBY},
       DeviceAPI.getURL() + overlay.img,
-      Map.objs.map
+      Map.objs.map,
+      opacity
     );
 
     overlays.push(o);
@@ -28,5 +30,6 @@
     for(var o in overlays) {
         overlays[o].setOpacity(percent);
     }
+    opacity = percent;
   }
 })(OverlayMap = {});

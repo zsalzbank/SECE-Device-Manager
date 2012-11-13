@@ -6,6 +6,7 @@
     <link rel ="stylesheet" type = "text/css" href= "./css/styles.css">
     <script type="text/javascript" src="js/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="js/bootstrap-tab.js"></script>
+    <script type="text/javascript" src="js/html5slider.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true"></script>
   </head>
   <body>
@@ -21,11 +22,6 @@
             <li><a href="overlay.htm">Add Overlay</a></li>
             <li><a href="area.htm">Add Area</a></li>
           </ul>
-          <div class="navbar-search pull-right" action="">
-              <label class="checkbox">Overlays<input type="checkbox" checked></label>
-              <label class="checkbox">Areas<input type="checkbox" id="show-areas" checked></label>
-            <input type="text" class="search-query span2" id="overlay-opacity" placeholder="Overlay Opacity" value="100">
-          </div>
         </div>
       </div>
     </div>
@@ -38,13 +34,27 @@
         </ul>
         <div class="tab-content">
           <div id="devices" class="tab-pane active">
+            <div class="btn-group">
+              <button class="btn active">Visible</button>
+              <button class="btn">Hidden</button>
+            </div>
+            <br>
             <input type="text" placeholder="Search">
           </div>
           <div id="overlays" class="tab-pane">
-              Overlays
+            <div class="well">
+                Opacity
+                <input type="range" min="0" max="100" step="1" value="50" id="overlay-opacity">
+        </div>
+            <input type="text" placeholder="Search">
           </div>
           <div id="areas" class="tab-pane">
-              Areas
+            <div class="btn-group">
+              <button class="btn">Visible</button>
+              <button class="btn active">Hidden</button>
+            </div>
+            <br>
+            <input type="text" placeholder="Search">
           </div>
         </div>
       </div>
@@ -63,18 +73,31 @@
         OverlayMap.loadOverlays();
         DeviceAPI.getAreas(AreaMap.drawAreas);
 
-        $("#overlay-opacity").keyup(function() {
-            console.log(this);
-            OverlayMap.setOpacity($(this).val());
-        });
+        function setupToggle(obj, group) {
+            group.children().first().click(function() {
+              var $this = $(this);
+              if(!$this.hasClass('active')) {
+                obj.toggle(true);
+                $this.addClass('active');
+                $this.next().removeClass('active');
+              }
+            });
+            group.children().last().click(function() {
+              var $this = $(this);
+              if(!$this.hasClass('active')) {
+                obj.toggle(false);
+                $this.addClass('active');
+                $this.prev().removeClass('active');
+              }
+            });
+        }
 
-        $("#show-areas").change(function() {
-          if($(this).is(':checked')) {
-            AreaMap.setMap(Map.objs.map);
-          } else {
-            AreaMap.setMap(null);
-          }
-        });
+        setupToggle(DeviceMap, $("#devices .btn-group"));
+        setupToggle(AreaMap, $("#areas .btn-group"));
+
+        $("#overlay-opacity").change(function() {
+            OverlayMap.setOpacity($(this).val());
+        }).change();
       })();
     </script>
   </body>

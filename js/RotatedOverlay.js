@@ -1,10 +1,11 @@
 RotatedOverlay.prototype = new google.maps.OverlayView();
 
-function RotatedOverlay(locA, locB, refA, refB, image, map) {
+function RotatedOverlay(locA, locB, refA, refB, image, map, opacity) {
   this.locA_ = locA;
   this.locB_ = locB;
   this.refA_ = refA;
   this.refB_ = refB;
+  this.opacity_ = opacity;
 
   this.image_ = new Image;
   this.image_.src = image;
@@ -24,7 +25,8 @@ RotatedOverlay.prototype.onAdd = function() {
   var img = $('<img/>');
   img.attr('src', this.image_.src);
 
-  $(div).append(img);
+  div.css('opacity', this.opacity_/100);
+  div.append(img);
 
   var panes = this.getPanes();
   panes.overlayLayer.appendChild(div.get(0));
@@ -57,4 +59,9 @@ RotatedOverlay.prototype.draw = function() {
 
 RotatedOverlay.prototype.setOpacity = function(percent) {
   this.div_.css('opacity', percent/100);
+}
+
+RotatedOverlay.prototype.onRemove = function() {
+  this.div_.remove();
+  this.div_ = null;
 }

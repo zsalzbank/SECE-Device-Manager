@@ -2,6 +2,7 @@
   var dm = exports;
   var markers = [];
   var openWindow = null;
+  var visible = true;
 
   dm.addDevice = function(device) {
     var $wc = $("<div></div>");
@@ -30,7 +31,7 @@
     });
     var marker = new google.maps.Marker({
       position: pos,
-      map: Map.objs.map,
+      map: (visible) ? Map.objs.map : null,
       title: device.name,
       animation: google.maps.Animation.DROP
     });
@@ -81,6 +82,18 @@
     for (i in markers) {
       markers[i].setMap(m);
     }
+  }
+
+  dm.toggle = function(v) {
+    if(typeof v === "undefined") v = !visible;
+
+    if(v) {
+      setMarkerMap(Map.objs.map);
+    } else {
+      setMarkerMap(null);
+    }
+
+    visible = v;
   }
 
 })(DeviceMap = {});

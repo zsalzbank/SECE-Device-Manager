@@ -11,16 +11,12 @@
     $.getJSON(apiurl + "devices.js?callback=?", data, callback); 
   }
 
-  dapi.getNearArea = function(data, callback) {
-    $.getJSON(apiurl + "areas/near/?callback=?", data, callback); 
+  dapi.getAreas = function(data, callback) {
+    $.getJSON(apiurl + "areas.js?callback=?", data, callback); 
   }
 
-  dapi.getAreas = function(callback) {
-    $.getJSON(apiurl + "areas/?callback=?", callback); 
-  }
-
-  dapi.getOverlays = function(callback) {
-    $.getJSON(apiurl + "overlays.js?callback=?", callback); 
+  dapi.getOverlays = function(data, callback) {
+    $.getJSON(apiurl + "overlays.js?callback=?", data, callback); 
   }
 
   dapi.addDevice = function(device, callback) {
@@ -57,10 +53,22 @@
     });
   }
 
-  dapi.deleteDevice = function(id, callback) {
-    $.ajax(apiurl + "devices/" + id + "/", {
+  function del(url, id, callback) {
+    $.ajax(apiurl + url + id + "/", {
       type: "delete",
       complete: callback
     });
+  }
+
+  dapi.deleteDevice = function(id, callback) {
+    del("devices/", id, callback);
+  }
+
+  dapi.deleteOverlay = function(id, callback) {
+    del("overlays/", id, callback);
+  }
+
+  dapi.deleteArea = function(id, callback) {
+    del("areas/", id, callback);
   }
 })(DeviceAPI = {});

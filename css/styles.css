@@ -43,3 +43,25 @@
 .navbar .checkbox {
   display: inline-block;
 }
+
+.extras .extra {
+  padding: 4px;
+  margin: 2px 4px;
+  background: #eee;
+}
+
+.extras .extra span {
+  font-weight: bold;
+  font-size: 10pt;
+  display: block;
+}
+
+.fwtb {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 5px 14px 5px !important;
+}
+
+#sidebar .nav.nav-tabs {
+  margin-bottom: 4px;
+}

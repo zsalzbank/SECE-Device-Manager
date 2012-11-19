@@ -25,6 +25,8 @@
     });
 
     google.maps.event.addListener(dm, 'overlaycomplete', doneDrawing);
+    
+    AreaMap.toggle(true);
   }
 
   ac.start = function() {
@@ -81,7 +83,7 @@
   function selectParent(e) {
     var id = $(e.target).val();
     if(currentParent != null) {
-      currentParent.setOptions({
+      currentParent.overlay.setOptions({
         clickable: false,
         fillColor: '#DDD',
         strokeColor: '#BBB'
@@ -90,7 +92,7 @@
 
     if(id != -1) {
       currentParent = AreaMap.currentAreas()[id];
-      currentParent.setOptions({
+      currentParent.overlay.setOptions({
         clickable: false,
         fillColor: '#00DD00',
         strokeColor: '#BBB'
@@ -118,22 +120,24 @@
     content.find("#add-parent").addClass(parentClass);
     $("." + parentClass).live('change', selectParent);
 
-    DeviceAPI.getNearArea({
-      n: bounds.getNorthEast().lat(),
-      e: bounds.getNorthEast().lng(),
-      s: bounds.getSouthWest().lat(),
-      w: bounds.getSouthWest().lng()
-    },
-    function(data) {
-        fillParentSelect(data, parentClass);
-    });
-
     infoWindow = new google.maps.InfoWindow({
       content: content.html(),
       position: bounds.getCenter()
     });
 
     google.maps.event.addListener(infoWindow, 'closeclick', cancelOverlay);
+    google.maps.event.addListener(infoWindow, 'domready', function() {
+      AreaMap.clearAreas();
+      DeviceAPI.getAreas({
+        n: bounds.getNorthEast().lat(),
+        e: bounds.getNorthEast().lng(),
+        s: bounds.getSouthWest().lat(),
+        w: bounds.getSouthWest().lng()
+      },
+      function(data) {
+          fillParentSelect(data, parentClass);
+      });
+    });
 
     infoWindow.open(Map.objs.map);
   }
@@ -179,10 +183,24 @@
         circle: (overlayType == "circle")
     }
 
+    console.log(overlayType);
+
     if(area.circle) {
         var c = overlay.getCenter();
         area.center = c.lng() + " " + c.lat();
         area.radius = overlay.radius;
+    } else if (overlayType == 'rectangle') {
+        var bnds = overlay.getBounds();
+        var ne = bnds.getNorthEast();
+        var sw = bnds.getSouthWest();
+        var points = [
+          ne.lng() + " " + ne.lat(),
+          ne.lng() + " " + sw.lat(),
+          sw.lng() + " " + sw.lat(),
+          sw.lng() + " " + ne.lat(),
+          ne.lng() + " " + ne.lat()
+        ];
+        area.shape = points;
     } else {
         var points = [];
         overlay.getPath().forEach(function(p) {

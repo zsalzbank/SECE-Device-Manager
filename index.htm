@@ -27,6 +27,10 @@
     </div>
     <div>
       <div id="sidebar">
+        <div class="well">
+            Global Altitude: <span id="map-current-altitude"></span>
+          <input type="range" min="-1" max="0" step="1" value="-1" id="map-altitude">
+        </div>
         <ul class="nav nav-tabs">
             <li class="active"><a href="#devices" data-toggle="tab">Devices</a></li>
             <li><a href="#overlays" data-toggle="tab">Overlays</a></li>
@@ -34,27 +38,49 @@
         </ul>
         <div class="tab-content">
           <div id="devices" class="tab-pane active">
-            <div class="btn-group">
-              <button class="btn active">Visible</button>
-              <button class="btn">Hidden</button>
+            <div class="btn-toolbar">
+              <div class="btn-group visibility">
+                <button class="btn btn-mini active">Visible</button>
+                <button class="btn btn-mini">Hidden</button>
+              </div>
+              <div class="btn-group pull-right">
+                <a href="device.htm" class="btn btn-success btn-mini">Add</a>
+              </div>
             </div>
-            <br>
-            <input type="text" placeholder="Search">
+            <input type="text" placeholder="Search" class="fwtb">
+            <div class="extras">
+
+            </div>
           </div>
           <div id="overlays" class="tab-pane">
             <div class="well">
+              <div class="btn-group pull-left">
                 Opacity
+              </div>
+              <div class="btn-group pull-right">
+                <a href="overlay.htm" class="btn btn-success btn-mini">Add</a>
+              </div>
                 <input type="range" min="0" max="100" step="1" value="50" id="overlay-opacity">
         </div>
-            <input type="text" placeholder="Search">
+            <input type="text" placeholder="Search" class="fwtb">
+            <div class="extras">
+
+            </div>
           </div>
           <div id="areas" class="tab-pane">
-            <div class="btn-group">
-              <button class="btn">Visible</button>
-              <button class="btn active">Hidden</button>
+            <div class="btn-toolbar">
+              <div class="btn-group visibility">
+                <button class="btn btn-mini">Visible</button>
+                <button class="btn btn-mini active">Hidden</button>
+              </div>
+              <div class="btn-group pull-right">
+                <a href="area.htm" class="btn btn-success btn-mini">Add</a>
+              </div>
+          </div>
+            <input type="text" placeholder="Search" class="fwtb">
+            <div class="extras">
+
             </div>
-            <br>
-            <input type="text" placeholder="Search">
           </div>
         </div>
       </div>
@@ -67,11 +93,90 @@
     <script type = "text/javascript" src = "js/overlay-map.js"></script>
     <script type = "text/javascript" src = "js/area-map.js"></script>
     <script type="text/javascript">
+      function changeAlt(a) {
+        var altControl = $("#map-altitude");
+        if(a > altControl.attr('max')) {
+          altControl.attr('max', a);
+        }
+      }
+
+      function deviceExtra(device) {
+        changeAlt(device.altitude);
+
+        var $div = $("<div></div>").addClass("extra");
+
+        var $title = $("<span></span>").html(device.name);
+        $div.append($title);
+
+        var $del = $('<button class="btn btn-danger btn-mini">Delete</button>').click(function() {
+          DeviceAPI.deleteDevice(device.id, function(data) {
+            if(data.success) {
+              DeviceMap.removeDevice(device, true);
+            } else {
+              alert("Could not delete device. Please try again later.");
+            }
+          });
+        });
+        $div.append($del);
+    
+        $("#devices .extras").append($div);
+        return $div;
+      }
+
+      function overlayExtra(overlay) {
+        changeAlt(overlay.altitude);
+
+        var $div = $("<div></div>").addClass("extra");
+
+        var $title = $("<span></span>").html(overlay.name);
+        $div.append($title);
+
+        var $del = $('<button class="btn btn-danger btn-mini">Delete</button>').click(function() {
+          DeviceAPI.deleteOverlay(overlay.id, function(data) {
+            if(data.success) {
+              OverlayMap.removeOverlay(overlay, true);
+            } else {
+              alert("Could not delete overlay. Please try again later.");
+            }
+          });
+        });
+        $div.append($del);
+
+        $("#overlays .extras").append($div);
+        return $div;
+      }
+
+      function areaExtra(area) {
+        changeAlt(area.altitude);
+
+        var $div = $("<div></div>").addClass("extra");
+
+        var $title = $("<span></span>").html(area.name);
+        $div.append($title);
+
+        var $del = $('<button class="btn btn-danger btn-mini">Delete</button>').click(function() {
+          DeviceAPI.deleteArea(area.id, function(data) {
+            if(data.success) {
+              AreaMap.removeArea(area, true);
+            } else {
+              alert("Could not delete area. Please try again later.");
+            }
+          });
+        });
+        $div.append($del);
+
+        $("#areas .extras").append($div);
+        return $div;
+      }
+
       (function() {
         Map.initializeMap("#map-canvas");
-        DeviceMap.loadDevices();
-        OverlayMap.loadOverlays();
-        DeviceAPI.getAreas(AreaMap.drawAreas);
+        DeviceMap.setExtra(deviceExtra);
+        DeviceAPI.getDevices({}, DeviceMap.drawDevices);
+        OverlayMap.setExtra(overlayExtra);
+        DeviceAPI.getOverlays({}, OverlayMap.drawOverlays)
+        AreaMap.setExtra(areaExtra);
+        DeviceAPI.getAreas({}, AreaMap.drawAreas);
 
         function setupToggle(obj, group) {
             group.children().first().click(function() {
@@ -82,7 +187,7 @@
                 $this.next().removeClass('active');
               }
             });
-            group.children().last().click(function() {
+            group.children().click(function() {
               var $this = $(this);
               if(!$this.hasClass('active')) {
                 obj.toggle(false);
@@ -92,11 +197,35 @@
             });
         }
 
-        setupToggle(DeviceMap, $("#devices .btn-group"));
-        setupToggle(AreaMap, $("#areas .btn-group"));
+        setupToggle(DeviceMap, $("#devices .visibility"));
+        setupToggle(AreaMap, $("#areas .visibility"));
 
         $("#overlay-opacity").change(function() {
             OverlayMap.setOpacity($(this).val());
+        }).change();
+
+        $("#devices input[type=text]").keyup(function() {
+            DeviceMap.search($(this).val());
+        });
+        $("#overlays input[type=text]").keyup(function() {
+            OverlayMap.search($(this).val());
+        });
+        $("#areas input[type=text]").keyup(function() {
+            AreaMap.search($(this).val());
+        });
+
+        $("#map-altitude").change(function() {
+            var v = parseInt($(this).val());
+            DeviceMap.setAltitude(v);
+            OverlayMap.setAltitude(v);
+            AreaMap.setAltitude(v);
+
+            var $el = $("#map-current-altitude");
+            if(v == -1) {
+              $el.html("Any");
+            } else {
+              $el.html(v + " +/- 5");
+            }
         }).change();
       })();
     </script>

@@ -49,13 +49,9 @@
       content: content.html()
     });
 
-    var marker = new google.maps.Marker({
-      position: pos,
-      map: inSearchResults(device) ? Map.objs.map : null,
-      title: device.name
-    });
+    var marker = new RotatedMarker(pos, device.bearing, inSearchResults(device) ? Map.objs.map : null);
 
-    google.maps.event.addListener(marker, "click", function() {
+    marker.setClick(function() {
       if(openWindow) openWindow.close();
       infoWindow.open(Map.objs.map, marker);
       openWindow = infoWindow;

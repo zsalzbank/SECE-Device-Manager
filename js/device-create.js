@@ -1,14 +1,18 @@
 (function(exports) {
   var dc = exports;
-  var $maptype, $options, $editor;
+  var $rotation, $maptype, $options, $editor;
   var dm = null, marker = null, normalMode = true, infoWindow = null, infoWindowContent = null;
+  var rotationEvent = null;
 
   dc.initialize = function() {
-    $maptype = $("#editor-options .maptype");
     $options = $("#editor-options");
     $editor = $("#device-editor");
+    $rotation = $("#editor-rotation");
+    $maptype = $("#editor-options .maptype");
+    $("#editor-rotation .btn-danger").click(cancelDevice);
+    $("#editor-rotation .btn-primary").click(showEditor);
     $("#editor-options .maptype").click(changeMapType);
-    $("#editor-options .continue").click(showEditor);
+    $("#editor-options .continue").click(showRotation);
     $("#editor-options .btn-danger").click(cancelDevice);
     $(".editor-form .btn-danger").live('click', cancelDevice);
     $(".editor-form .btn-primary").live('click', saveDevice);
@@ -28,11 +32,35 @@
     $(window).resize(winResize);
   }
 
-  function showEditor() {
+  function showRotation() {
     $options.hide();
+    $rotation.show();
     setNormalMode();
 
-    marker.setDraggable(false);
+    var p = marker.getPosition();
+    marker.setMap(null);
+
+    marker = new RotatedMarker(p, 0, Map.objs.map);
+
+    rotationEvent = google.maps.event.addListener(Map.objs.map, 'click', changeBearing);
+  }
+
+  function changeBearing(e) {
+    var loc1 = marker.getPosition();
+    var loc2 = e.latLng; 
+
+    var dLon =(loc2.lng()-loc1.lng()).toRad();
+    var y = Math.sin(dLon) * Math.cos(loc2.lat().toRad());
+    var x = Math.cos(loc1.lat().toRad())*Math.sin(loc2.lat().toRad()) -
+                Math.sin(loc1.lat().toRad())*Math.cos(loc2.lat().toRad())*Math.cos(dLon.toRad());
+    var brng = Math.atan2(y, x) * 180 / Math.PI;
+
+    marker.setRotation(brng);
+  }
+
+  function showEditor() {
+    $rotation.hide();
+    cancelRotation();
 
     infoWindow = new google.maps.InfoWindow({
       content: $editor.clone().html(),
@@ -75,6 +103,10 @@
       left: $(document).width()/2 - $options.width()/2 + 'px',
       top: ($("#map-canvas").offset().top + 10) + 'px'
     });
+    $rotation.css({
+      left: $(document).width()/2 - $rotation.width()/2 + 'px',
+      top: ($("#map-canvas").offset().top + 10) + 'px'
+    });
   }
 
   dc.start = function() {
@@ -88,13 +120,23 @@
         infoWindow = null;
     }
 
+    cancelRotation();
+
     marker.setMap(null);
     dm.setOptions({ drawingControl: true });
 
     marker = null;
     $options.hide();
+    $rotation.hide();
 
     setNormalMode();
+  }
+
+  function cancelRotation() {
+    if(rotationEvent != null) {
+      google.maps.event.removeListener(rotationEvent);
+      roationEvent = null;  
+    }
   }
 
   function isNumeric(n) {
@@ -126,7 +168,8 @@
       name: name,
       latitude: p.lat(),
       longitude: p.lng(),
-      altitude: altitude
+      altitude: altitude,
+      bearing: marker.getRotation()
     };
 
     DeviceAPI.addDevice(device, deviceDone);
@@ -170,3 +213,10 @@
     $options.show();
   }
 })(DeviceCreate = {});
+
+if (typeof Number.prototype.toRad == 'undefined') {
+  Number.prototype.toRad = function() {
+    return this * Math.PI / 180;
+  }
+}
+

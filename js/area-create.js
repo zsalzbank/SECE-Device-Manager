@@ -9,9 +9,6 @@
     $(".btn-danger").live('click', cancelOverlay);
     $(".btn-primary").live('click', saveOverlay);
 
-    var columbia = new google.maps.LatLng(40.809038567298586, -73.96126449108124);
-    Map.objs.map.setCenter(columbia);
-
     dm = new google.maps.drawing.DrawingManager({
       drawingControl: true,
       drawingControlOptions: {
@@ -182,8 +179,6 @@
         parent: parent_area,
         circle: (overlayType == "circle")
     }
-
-    console.log(overlayType);
 
     if(area.circle) {
         var c = overlay.getCenter();

@@ -5,8 +5,7 @@
     <link rel ="stylesheet" type = "text/css" href= "./css/bootstrap.css">
     <link rel ="stylesheet" type = "text/css" href= "./css/styles.css">
     <script type="text/javascript" src="js/jquery-1.7.1.js"></script>
-    <script type="text/javascript" src="js/bootstrap-tab.js"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=true"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDB8hSxJc0O5AOlzvYVAle7ARvFENvFqbI&sensor=false&libraries=drawing"></script>
   </head>
   <body>
     <div class="navbar">
@@ -24,40 +23,34 @@
         </div>
       </div>
     </div>
-    <div>
-      <div id="sidebar">
-        <p class="step">
-          Click a location on the map to add a device.  Click continue to open street view and pinpoint the location.
-        </p>
-        <p class="step">
-          Select the location of the device on the street view map.  When selected, press continue.
-        </p>
-        <p class="step">
-          Enter a name and altitude and press continue to add the device.
-          <input type="text" id="add-name" placeholder="Name">
-          <input type="text" id="add-altitude" placeholder="Altitude" value="0">
-        </p>
-        <p class="success step">
-        Device was added!<br>
-            <a href="index.htm" class="btn btn-primary">View Map</a>
-            <a href="device.htm" class="btn btn-primary">Add Another</a>
-        </p>
-        <p class="error">
-
-        </p>
-        <a href="#" id="add-continue" class="btn btn-primary">Continue</a>
-      </div>
-      <div id="map-canvas"></div>
+    <div id="editor-options" class="hide">
+      Drag the marker to change its position.<br>
+      <a href="#" class="btn btn-primary maptype">Street View</a>
+      <a href="#" class="btn btn-primary continue">Continue</a>
+      <a href="#" class="btn btn-danger">Cancel</a>
     </div>
-    <script type = "text/javascript" src = "js/RotatedOverlay.js"></script>
+    <div id="device-editor" class="hide">
+      <div class="editor-form">
+        Please enter the following information:<br>
+        <input type="text" id="add-name" placeholder="Name"><br>
+        <input type="text" id="add-altitude" placeholder="Altitude"><br>
+        <div class="error hide"></div>
+        <a href="#" class="btn btn-primary">Save</a>
+        <a href="#" class="btn btn-danger">Cancel</a>
+      </div>
+      <div class="success hide">
+        Device was added!
+      </div>
+    </div>
+    <div id="map-canvas"></div>
     <script type = "text/javascript" src = "js/map.js"></script>
     <script type = "text/javascript" src = "js/device-api.js"></script>
-    <script type = "text/javascript" src = "js/device-map.js"></script>
     <script type = "text/javascript" src = "js/device-create.js"></script>
     <script type="text/javascript">
       (function() {
         Map.initializeMap("#map-canvas");
         DeviceCreate.initialize();
+        DeviceCreate.start();
       })();
     </script>
   </body>

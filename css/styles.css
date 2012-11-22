@@ -65,3 +65,12 @@
 #sidebar .nav.nav-tabs {
   margin-bottom: 4px;
 }
+
+#editor-options {
+    position: absolute;
+    z-index: 1000;
+    background: #FFF;
+    border: 1px solid #000;
+    padding: 20px;
+    text-align: center;
+}

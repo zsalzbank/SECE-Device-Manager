@@ -71,7 +71,7 @@
     }
   }
 
-  function addArea(area) {
+  am.addArea = function(area) {
     var pOverlay = null;
     if(area.circle) {
       pOverlay = new google.maps.Circle({
@@ -92,7 +92,7 @@
 
     pOverlay.setOptions({
       clickable: false,
-      fillColor: '#DDD',
+      fillColor: '#FF0000',
       strokeColor: '#BBB'
     });
 
@@ -113,7 +113,7 @@
       area = area.area;
 
       if(!(area.id in mapAreas)) {
-        addArea(area);
+        am.addArea(area);
       }
     });
   }

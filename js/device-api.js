@@ -7,6 +7,11 @@
     return apiurl;
   }
 
+  dapi.getBox = function(id, where, distance, callback) {
+    $.getJSON(apiurl + "devices/test/?callback=?", { id: id, where: where, distance: distance }, callback
+  }
+
+
   dapi.getDevices = function(data, callback) {
     $.getJSON(apiurl + "devices.js?callback=?", data, callback); 
   }

@@ -154,12 +154,16 @@
 
     var name = form.find("#add-name").val()
     var altitude = form.find("#add-altitude").val()
+    var neardist = form.find("#add-near").val()
 
     if (name == "") {
       $error.text("Please enter a valid name.").show();
       return;
     } else if (!isNumeric(altitude)) {
       $error.text("Please enter a valid altitude.").show();
+      return;
+    } else if (neardist != "" && !isNumeric(neardist)) {
+      $error.text("Please enter a valid near distance.").show();
       return;
     }
 
@@ -169,7 +173,8 @@
       latitude: p.lat(),
       longitude: p.lng(),
       altitude: altitude,
-      bearing: marker.getRotation()
+      bearing: marker.getRotation(),
+      near_distance: (neardist == "") ? null : neardist
     };
 
     DeviceAPI.addDevice(device, deviceDone);

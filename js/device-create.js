@@ -173,9 +173,12 @@
       latitude: p.lat(),
       longitude: p.lng(),
       altitude: altitude,
-      bearing: marker.getRotation(),
-      near_distance: (neardist == "") ? null : neardist
+      bearing: marker.getRotation()
     };
+
+    if (neardist != "") {
+        device.near_distance = neardist
+    }
 
     DeviceAPI.addDevice(device, deviceDone);
     b.hide();

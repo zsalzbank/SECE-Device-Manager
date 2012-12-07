@@ -61,6 +61,26 @@
       openWindow = null;
     });
 
+    var overlay = null;
+    if(device.radius != null) {
+      console.log('circle');
+      overlay = new google.maps.Circle({
+        center: new google.maps.LatLng(device.latitude, device.longitude),
+        radius: device.radius,
+        map: inSearchResults(device) ? Map.objs.map : null
+      });
+    } else if(device.shape_points != null) {
+      console.log('poly');
+      var points = new google.maps.MVCArray();
+      $(device.shape_points).each(function(i, pt) {
+        points.push(new google.maps.LatLng(pt.lat, pt.lng)); 
+      });
+      overlay = new google.maps.Polygon({
+        paths: points,
+        map: inSearchResults(device) ? Map.objs.map : null
+      });
+    }
+
     var extra = (extraGenerator == null) ? null : extraGenerator(device);
     if(extra != null && !inSearchResults(device)) {
       extra.hide();
@@ -70,7 +90,8 @@
       device: device,
       marker: marker,
       infoWindow: infoWindow,
-      extra: extra
+      extra: extra,
+      overlay: overlay
     };
   }
 
@@ -92,6 +113,9 @@
         if(markers[i].extra != null) {
           markers[i].extra.show();
         }
+        if(markers[i].overlay != null) {
+          markers[i].setMap(m);
+        }
       } else {
         dm.removeDevice(markers[i].device, false);
       }
@@ -103,6 +127,9 @@
     markers[device.id].infoWindow.close();
     if(markers[device.id].extra != null) {
       markers[device.id].extra.hide();
+    }
+    if(markers[device.id].overlay != null) {
+      markers[device.id].overlay.setMap(null);
     }
 
     if(deleteIt) {

@@ -2,7 +2,9 @@
   var dc = exports;
   var $rotation, $maptype, $options, $editor;
   var dm = null, marker = null, normalMode = true, infoWindow = null, infoWindowContent = null;
+  var overlayType = null, overlay = null;
   var rotationEvent = null;
+  var emptyicon = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
   dc.initialize = function() {
     $options = $("#editor-options");
@@ -22,14 +24,49 @@
       drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_CENTER,
         drawingModes: [
-          google.maps.drawing.OverlayType.MARKER
+          google.maps.drawing.OverlayType.MARKER,
+          google.maps.drawing.OverlayType.CIRCLE,
+          google.maps.drawing.OverlayType.POLYGON,
+          google.maps.drawing.OverlayType.RECTANGLE
         ]
       }
     });
 
-    google.maps.event.addListener(dm, 'markercomplete', doneDrawing);
+    google.maps.event.addListener(dm, 'overlaycomplete', doneDrawingOverlay);
 
     $(window).resize(winResize);
+  }
+
+  function getBounds(o) {
+    if(typeof o.getBounds !== "undefined")
+      return o.getBounds();
+
+    var bounds = new google.maps.LatLngBounds();
+    var points = o.getPath();
+    
+    points.forEach(function(p) {
+      bounds.extend(p);
+    });
+
+    return bounds;
+  }
+
+  function doneDrawingOverlay(event) {
+    if(event.type != 'marker') {
+        overlayType = event.type;
+        overlay = event.overlay;
+
+        var bounds = getBounds(overlay);
+        var center = bounds.getCenter();
+        var m = new google.maps.Marker({
+          position: center,
+          map: Map.objs.map,
+          icon: emptyicon 
+        });
+        doneDrawing(m);
+    } else {
+      doneDrawing(event.overlay);
+    }
   }
 
   function showRotation() {
@@ -120,6 +157,12 @@
         infoWindow = null;
     }
 
+    if(overlay != null) {
+        overlay.setMap(null);
+        overlay = null;
+        overlayType = null;
+    }
+
     cancelRotation();
 
     marker.setMap(null);
@@ -170,14 +213,36 @@
     var p = marker.getPosition();
     var device = {
       name: name,
-      latitude: p.lat(),
-      longitude: p.lng(),
       altitude: altitude,
-      bearing: marker.getRotation()
+      bearing: marker.getRotation(),
+      latitude: p.lat(),
+      longitude: p.lng()
     };
 
     if (neardist != "") {
         device.near_distance = neardist
+    }
+
+    if(overlayType == 'circle') {
+        device.radius = overlay.radius;
+    } else if(overlayType == 'rectangle') {
+        var bnds = overlay.getBounds();
+        var ne = bnds.getNorthEast();
+        var sw = bnds.getSouthWest();
+        var points = [
+          ne.lng() + " " + ne.lat(),
+          ne.lng() + " " + sw.lat(),
+          sw.lng() + " " + sw.lat(),
+          sw.lng() + " " + ne.lat(),
+          ne.lng() + " " + ne.lat()
+        ];
+        device.shape = points;
+    } else if (overlayType != null) {
+        var points = [];
+        overlay.getPath().forEach(function(p) {
+          points.push(p.lng() + " " + p.lat());
+        });
+        device.shape = points;
     }
 
     DeviceAPI.addDevice(device, deviceDone);
@@ -196,7 +261,7 @@
 
   function updateOptions() {
     Map.objs.sv.getPanoramaByLocation(marker.getPosition(), 50, function(data, status) {
-      $maptype.toggle(status == google.maps.StreetViewStatus.OK);
+      $maptype.toggle(status == google.maps.StreetViewStatus.OK && overlay == null);
 
       if(!normalMode && status != google.maps.StreetViewStatus.OK) {
         setNormalMode();
@@ -212,13 +277,17 @@
       drawingMode: null 
     });
 
-    marker.setDraggable(true);
+    if(overlay == null) {
+        marker.setDraggable(true);
+        google.maps.event.addListener(marker, 'dragend', updateOptions);
 
-    google.maps.event.addListener(marker, 'dragend', updateOptions);
-
-    updateOptions();
-    winResize();
-    $options.show();
+        updateOptions();
+        winResize();
+        $options.show();
+    } else {
+        winResize();
+        showRotation();
+    }
   }
 })(DeviceCreate = {});
 

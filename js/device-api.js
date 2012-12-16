@@ -34,8 +34,8 @@
     data.append('overlay[name]', name);
     data.append('overlay[description]', description);
     data.append('overlay[img]', file);
-    data.append('overlay[geoRefA]', "POINT(" + pA.lng() + " " + pA.lat() + ")");
-    data.append('overlay[geoRefB]', "POINT(" + pB.lng() + " " + pB.lat() + ")");
+    data.append('overlay[geoRefA]', pA.lng() + " " + pA.lat());
+    data.append('overlay[geoRefB]', pB.lng() + " " + pB.lat());
     data.append('overlay[imgRefAX]', rA.x);
     data.append('overlay[imgRefAY]', rA.y);
     data.append('overlay[imgRefBX]', rB.x);
